@@ -12,9 +12,9 @@ func TestLoadFile(t *testing.T) {
 	path := filepath.Join(dir, "switch.yaml")
 	if err := os.WriteFile(path, []byte(`
 contexts:
-  psp-dev:
-    profile: PSPAdmin
-    eks_cluster: psp-dev-eks
+  abc-dev:
+    profile: ABCAdmin
+    eks_cluster: abc-dev-eks
     region: eu-west-1
 `), 0o600); err != nil {
 		t.Fatal(err)
@@ -24,14 +24,14 @@ contexts:
 	if err != nil {
 		t.Fatalf("LoadFile: %v", err)
 	}
-	ctx, ok := c.Lookup("psp-dev")
+	ctx, ok := c.Lookup("abc-dev")
 	if !ok {
-		t.Fatalf("psp-dev missing")
+		t.Fatalf("abc-dev missing")
 	}
-	if ctx.Profile != "PSPAdmin" {
+	if ctx.Profile != "ABCAdmin" {
 		t.Errorf("profile = %q", ctx.Profile)
 	}
-	if ctx.EKSCluster != "psp-dev-eks" {
+	if ctx.EKSCluster != "abc-dev-eks" {
 		t.Errorf("cluster = %q", ctx.EKSCluster)
 	}
 	if c.Path != path {

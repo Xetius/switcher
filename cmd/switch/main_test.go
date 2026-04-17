@@ -10,31 +10,32 @@ import (
 func fixture() *config.Config {
 	return &config.Config{
 		Contexts: map[string]config.Context{
-			"psp-dev":  {Profile: "PSPAdmin"},
-			"psp-pt":   {Profile: "PSPAdmin"},
-			"psp-prod": {Profile: "PSPAdmin"},
+			"abc-dev":  {Profile: "ABCAdmin"},
+			"abc-pt":   {Profile: "ABCAdmin"},
+			"abc-prod": {Profile: "ABCAdmin"},
 			"other":    {Profile: "Other"},
 		},
 	}
 }
 
 func TestTryDirectExactMatch(t *testing.T) {
-	name, ok := tryDirect(fixture(), "psp-dev")
-	if !ok || name != "psp-dev" {
+	name, ok := tryDirect(fixture(), "abc-dev")
+	if !ok || name != "abc-dev" {
 		t.Errorf("name=%q ok=%v", name, ok)
 	}
 }
 
 func TestTryDirectUniqueFuzzy(t *testing.T) {
-	// "ppt" matches only psp-pt: psp-prod has no 't', psp-dev has no 't'.
-	name, ok := tryDirect(fixture(), "ppt")
-	if !ok || name != "psp-pt" {
+	// "apt" matches only abc-pt: abc-prod has no 't', abc-dev has no 'p'.
+	name, ok := tryDirect(fixture(), "apt")
+	if !ok || name != "abc-pt" {
 		t.Errorf("name=%q ok=%v", name, ok)
 	}
 }
 
 func TestTryDirectAmbiguousFuzzy(t *testing.T) {
-	_, ok := tryDirect(fixture(), "ppp")
+	// "ap" matches abc-pt and abc-prod (both have 'p' after the initial 'a').
+	_, ok := tryDirect(fixture(), "ap")
 	if ok {
 		t.Error("expected ambiguous, got direct hit")
 	}

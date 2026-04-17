@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
 	"time"
 
@@ -73,7 +74,7 @@ Shell integration:
   add to .zshrc / .bashrc:
       eval "$(switch --zsh)"          # or --bash
   then:
-      switch psp-dev
+      switch abc-dev
 
 Query resolution:
   - exact name match → used directly
@@ -164,7 +165,7 @@ func resolve(cfg *config.Config, query string) (string, error) {
 	if name, ok := tryDirect(cfg, query); ok {
 		return name, nil
 	}
-	return tui.Pick(cfg.Names(), query)
+	return tui.Pick(items(cfg), query)
 }
 
 // tryDirect returns (name, true) when the query can be resolved without a
@@ -177,11 +178,24 @@ func tryDirect(cfg *config.Config, query string) (string, bool) {
 	if _, ok := cfg.Lookup(query); ok {
 		return query, true
 	}
-	matches := tui.Filter(cfg.Names(), query)
+	matches := tui.Filter(items(cfg), query)
 	if len(matches) == 1 {
-		return matches[0], true
+		return matches[0].Name, true
 	}
 	return "", false
+}
+
+// items builds the picker rows from config. Group = AWS profile so that
+// contexts sharing a profile share a color in the picker.
+func items(cfg *config.Config) []tui.Item {
+	names := cfg.Names()
+	sort.Strings(names)
+	out := make([]tui.Item, 0, len(names))
+	for _, n := range names {
+		ctx, _ := cfg.Lookup(n)
+		out = append(out, tui.Item{Name: n, Group: ctx.Profile})
+	}
+	return out
 }
 
 func shellQuote(s string) string {

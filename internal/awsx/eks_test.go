@@ -33,7 +33,7 @@ func TestUpdateKubeconfigWritesNewFile(t *testing.T) {
 	})
 	installExecCommand(t, func() string { return "switch" })
 
-	if err := UpdateKubeconfig("psp-dev", "psp-dev-eks", "eu-west-1", "PSPAdmin"); err != nil {
+	if err := UpdateKubeconfig("abc-dev", "abc-dev-eks", "eu-west-1", "ABCAdmin"); err != nil {
 		t.Fatal(err)
 	}
 
@@ -44,18 +44,18 @@ func TestUpdateKubeconfigWritesNewFile(t *testing.T) {
 	s := string(data)
 
 	for _, want := range []string{
-		"name: psp-dev",
+		"name: abc-dev",
 		"server: https://example.eks.amazonaws.com",
 		"certificate-authority-data: CERT",
 		"apiVersion: client.authentication.k8s.io/v1beta1",
 		"command: switch",
 		"eks-token",
 		"--cluster",
-		"psp-dev-eks",
+		"abc-dev-eks",
 		"--region",
 		"eu-west-1",
 		"--profile",
-		"PSPAdmin",
+		"ABCAdmin",
 	} {
 		if !strings.Contains(s, want) {
 			t.Errorf("kubeconfig missing %q\n---\n%s", want, s)
@@ -145,7 +145,7 @@ users:
 		return "https://new.eks", "CA", nil
 	})
 
-	if err := UpdateKubeconfig("psp-dev", "psp-dev-eks", "eu-west-1", "PSPAdmin"); err != nil {
+	if err := UpdateKubeconfig("abc-dev", "abc-dev-eks", "eu-west-1", "ABCAdmin"); err != nil {
 		t.Fatal(err)
 	}
 
@@ -154,7 +154,7 @@ users:
 	if !strings.Contains(s, "name: other") {
 		t.Error("existing 'other' context was dropped")
 	}
-	if !strings.Contains(s, "name: psp-dev") {
+	if !strings.Contains(s, "name: abc-dev") {
 		t.Error("new context not added")
 	}
 	if !strings.Contains(s, "current-context: other") {
@@ -170,16 +170,16 @@ func TestUpdateKubeconfigReplacesExistingEntry(t *testing.T) {
 	existing := `apiVersion: v1
 kind: Config
 clusters:
-- name: psp-dev
+- name: abc-dev
   cluster:
     server: https://stale
 contexts:
-- name: psp-dev
+- name: abc-dev
   context:
-    cluster: psp-dev
-    user: psp-dev
+    cluster: abc-dev
+    user: abc-dev
 users:
-- name: psp-dev
+- name: abc-dev
   user:
     token: stale
 `
@@ -189,7 +189,7 @@ users:
 		return "https://fresh", "CA", nil
 	})
 
-	if err := UpdateKubeconfig("psp-dev", "psp-dev-eks", "eu-west-1", "PSPAdmin"); err != nil {
+	if err := UpdateKubeconfig("abc-dev", "abc-dev-eks", "eu-west-1", "ABCAdmin"); err != nil {
 		t.Fatal(err)
 	}
 

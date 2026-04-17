@@ -10,15 +10,15 @@ const sampleConfig = `
 apiVersion: v1
 kind: Config
 contexts:
-- name: psp-dev
+- name: abc-dev
   context:
-    cluster: psp-dev-eks
+    cluster: abc-dev-eks
     user: aws
-- name: psp-prod
+- name: abc-prod
   context:
-    cluster: psp-prod-eks
+    cluster: abc-prod-eks
     user: aws
-current-context: psp-dev
+current-context: abc-dev
 `
 
 func writeConfig(t *testing.T, dir, name, body string) string {
@@ -39,7 +39,7 @@ func TestContexts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(names) != 2 || names[0] != "psp-dev" || names[1] != "psp-prod" {
+	if len(names) != 2 || names[0] != "abc-dev" || names[1] != "abc-prod" {
 		t.Errorf("names = %v", names)
 	}
 }
@@ -88,9 +88,9 @@ func TestHasContext(t *testing.T) {
 	dir := t.TempDir()
 	t.Setenv("KUBECONFIG", writeConfig(t, dir, "config", sampleConfig))
 
-	ok, err := HasContext("psp-dev")
+	ok, err := HasContext("abc-dev")
 	if err != nil || !ok {
-		t.Errorf("psp-dev: ok=%v err=%v", ok, err)
+		t.Errorf("abc-dev: ok=%v err=%v", ok, err)
 	}
 	ok, err = HasContext("missing")
 	if err != nil || ok {
@@ -100,7 +100,7 @@ func TestHasContext(t *testing.T) {
 
 func TestUseContextCmd(t *testing.T) {
 	cases := map[string]string{
-		"psp-dev":       "kubectl config use-context 'psp-dev'",
+		"abc-dev":       "kubectl config use-context 'abc-dev'",
 		"weird'name":    `kubectl config use-context 'weird'\''name'`,
 		"with space":    "kubectl config use-context 'with space'",
 	}

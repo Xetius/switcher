@@ -48,13 +48,13 @@ Example:
 
 ```yaml
 contexts:
-  psp-dev:
-    profile: PSPAdmin
-    eks_cluster: psp-dev-eks
+  abc-dev:
+    profile: Profile1
+    eks_cluster: abc-dev-eks
     region: eu-west-1
-  psp-prod:
-    profile: PSPAdmin
-    eks_cluster: psp-prod-eks
+  abc-prod:
+    profile: Profile1
+    eks_cluster: abc-prod-eks
     region: eu-west-1
 ```
 
@@ -62,7 +62,7 @@ SSO session details (start URL, region) are read from the profile's entry in
 `~/.aws/config`, e.g.:
 
 ```ini
-[profile PSPAdmin]
+[profile ProfileName]
 sso_session = company-sso
 sso_account_id = 123456789012
 sso_role_name = AdministratorAccess
@@ -81,9 +81,9 @@ to bootstrap it.
 ## Usage
 
 ```sh
-switch psp-dev    # exact match
-switch ppt        # fuzzy; unique -> used directly
-switch ppp        # fuzzy; multiple -> opens finder prepopulated with "ppp"
+switch abc-dev    # exact match
+switch apt        # fuzzy; unique -> resolves to abc-pt
+switch abp        # fuzzy; multiple -> opens finder prepopulated with "abp"
 switch            # no query -> opens finder
 
 switch --help     # full usage
@@ -100,4 +100,3 @@ make test
 go run ./cmd/switch <query>
 ```
 
-See [`CLAUDE.md`](./CLAUDE.md) for architecture and contributor notes.

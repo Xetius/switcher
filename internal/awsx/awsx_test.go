@@ -40,8 +40,8 @@ func TestSessionValidPassesProfile(t *testing.T) {
 		got = profile
 		return nil
 	})
-	SessionValid("PSPAdmin")
-	if got != "PSPAdmin" {
+	SessionValid("ABCAdmin")
+	if got != "ABCAdmin" {
 		t.Errorf("profile = %q", got)
 	}
 }
@@ -67,11 +67,11 @@ func TestSSOLoginRunsWhenInvalid(t *testing.T) {
 		return nil
 	})
 
-	if err := SSOLogin("PSPAdmin"); err != nil {
+	if err := SSOLogin("ABCAdmin"); err != nil {
 		t.Fatal(err)
 	}
-	if gotProfile != "PSPAdmin" {
-		t.Errorf("login called with profile=%q, want PSPAdmin", gotProfile)
+	if gotProfile != "ABCAdmin" {
+		t.Errorf("login called with profile=%q, want ABCAdmin", gotProfile)
 	}
 }
 
